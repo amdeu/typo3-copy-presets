@@ -9,6 +9,10 @@ return [
 		'provider' => SvgIconProvider::class,
 		'source' => 'EXT:copy_presets/Resources/Public/Icons/doktype-copy-preset.svg',
 	],
+	'apps-pagetree-copy-preset-hideinmenu' => [
+		'provider' => SvgIconProvider::class,
+		'source' => 'EXT:copy_presets/Resources/Public/Icons/doktype-copy-preset-hideinmenu.svg',
+	],
 	'actions-copy-preset' => [
 		'provider' => SvgIconProvider::class,
 		'source' => 'EXT:copy_presets/Resources/Public/Icons/actions-copy-preset.svg',

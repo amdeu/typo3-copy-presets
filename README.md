@@ -13,7 +13,7 @@ Allows editors to quickly copy content elements from a list of "copy presets" in
 
 ## Requirements
 
-- TYPO3 v13.4 or higher
+- TYPO3 v13.4 or v14.3
 
 ## Usage
 
@@ -41,3 +41,10 @@ Allows editors to quickly copy content elements from a list of "copy presets" in
 4. Select the group/tab on the left
 5. Click on the preset you want to copy
 6. The element will be copied to the target position
+
+### Configuration
+Extension Configuration in Backend:
+
+`System (Admin Tools in v13) > Settings > Extension Configuration > copy_presets`
+
+- `includeContainerChildrenInWizard`: **Include container child elements in preset list (excluded by default)**. When enabled, child elements of containers will also be listed as presets. When disabled, only the container itself will be listed as a preset.

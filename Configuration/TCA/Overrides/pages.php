@@ -14,3 +14,4 @@ $GLOBALS['TCA']['pages']['columns']['doktype']['config']['items'][] = [
 
 // Add icon for pages tree
 $GLOBALS['TCA']['pages']['ctrl']['typeicon_classes'][3151625] = 'apps-pagetree-copy-preset';
+$GLOBALS['TCA']['pages']['ctrl']['typeicon_classes']['3151625-hideinmenu'] = 'apps-pagetree-copy-preset-hideinmenu';

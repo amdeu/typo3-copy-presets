@@ -10,6 +10,7 @@ use TYPO3\CMS\Core\Database\ConnectionPool;
 use TYPO3\CMS\Core\Package\PackageManager;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Imaging\IconFactory;
+use TYPO3\CMS\Core\Imaging\IconSize;
 use TYPO3\CMS\Core\Authentication\BackendUserAuthentication;
 use TYPO3\CMS\Core\Database\Query\Restriction\DeletedRestriction;
 
@@ -112,7 +113,14 @@ class CopyPresetService
 			->removeByType(\TYPO3\CMS\Core\Database\Query\Restriction\HiddenRestriction::class);
 
 		// If configured, include container child elements, exclude by default
-		if (!$includeContainerChildrenInWizard && $this->isContainerActive()) {
+		if (!$this->isContainerActive() || $includeContainerChildrenInWizard) {
+			$queryBuilder->where(
+				$queryBuilder->expr()->in(
+					'pid',
+					$queryBuilder->createNamedParameter($pageUids, \Doctrine\DBAL\ArrayParameterType::INTEGER)
+				)
+			);
+		} else {
 			$queryBuilder->where(
 				$queryBuilder->expr()->in(
 					'pid',
@@ -121,13 +129,6 @@ class CopyPresetService
 				$queryBuilder->expr()->or(
 					$queryBuilder->expr()->eq('tx_container_parent', 0),
 					$queryBuilder->expr()->isNull('tx_container_parent')
-				)
-			);
-		} else {
-			$queryBuilder->where(
-				$queryBuilder->expr()->in(
-					'pid',
-					$queryBuilder->createNamedParameter($pageUids, \Doctrine\DBAL\ArrayParameterType::INTEGER)
 				)
 			);
 		}
@@ -154,8 +155,8 @@ class CopyPresetService
 				];
 			}
 
-			// Add icon information
-			$element['icon'] = $this->iconFactory->getIconForRecord('tt_content', $element, 'small')->render();
+//			// Add icon information
+//			$element['icon'] = $this->iconFactory->getIconForRecord('tt_content', $element, IconSize::SMALL)->render();
 
 			$grouped[$pageUid]['elements'][] = $element;
 		}

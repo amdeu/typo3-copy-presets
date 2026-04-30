@@ -1,11 +1,11 @@
 {
   "name": "amdeu/typo3-copy-presets",
   "type": "typo3-cms-extension",
-  "description": "Quickly copy content from a list of presets",
+  "description": "Copy Presets - Quickly copy content from a list of presets",
   "license": "GPL-2.0-or-later",
   "require": {
-    "typo3/cms-core": "^13.4",
-    "typo3/cms-backend": "^13.4"
+    "typo3/cms-core": "^13.4 || ^14.3",
+    "typo3/cms-backend": "^13.4 || ^14.3"
   },
   "autoload": {
     "psr-4": {

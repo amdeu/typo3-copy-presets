@@ -8,6 +8,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use TYPO3\CMS\Core\Http\RedirectResponse;
 use TYPO3\CMS\Core\Http\HtmlResponse;
+use TYPO3\CMS\Core\Localization\LanguageService;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Messaging\FlashMessage;
 use TYPO3\CMS\Core\Type\ContextualFeedbackSeverity;
@@ -27,7 +28,7 @@ class CopyPresetWizardController
 		private readonly ContentDefenderService $contentDefenderService,
 		private readonly UriBuilder $uriBuilder,
 		private readonly BackendViewFactory $backendViewFactory,
-		private readonly FlashMessageService $flashMessageService,
+		private readonly FlashMessageService $flashMessageService
 	) {}
 
 	/**
@@ -55,6 +56,7 @@ class CopyPresetWizardController
 
 		// Convert to format expected by typo3-backend-new-record-wizard
 		$categories = [];
+		$ctypeLabels = $this->getCTypeLabels();
 		foreach ($groupedPresets as $group) {
 			// Filter elements by content_defender restrictions
 			$filteredElements = $this->contentDefenderService->filterPresetsByAllowedCTypes(
@@ -85,7 +87,7 @@ class CopyPresetWizardController
 				$items[] = [
 					'identifier' => 'preset_' . $element['uid'],
 					'label' => $element['header'] ?: '[No Header]',
-					'description' => $element['CType'],
+					'description' => $ctypeLabels[$element['CType']] ?? $element['CType'],
 					'icon' => $GLOBALS['TCA']['tt_content']['ctrl']['typeicon_classes'][$element['CType']] ?? '',
 					'url' => $executeUrl,
 					'requestType' => 'location',
@@ -200,6 +202,34 @@ class CopyPresetWizardController
 
 		$messageQueue = $this->flashMessageService->getMessageQueueByIdentifier();
 		$messageQueue->enqueue($flashMessage);
+	}
+
+
+	/**
+	 * Get human-readable labels for all CTypes from TCA
+	 */
+	private function getCTypeLabels(): array
+	{
+		$labels = [];
+		$ctypeItems = $GLOBALS['TCA']['tt_content']['columns']['CType']['config']['items'] ?? [];
+
+		foreach ($ctypeItems as $item) {
+			$label = $item['label'] ?? $item[0] ?? '';
+			$value = $item['value'] ?? $item[1] ?? '';
+
+			if ($value) {
+				// sL() handles both plain strings and LLL: references
+				$labels[$value] = $this->getLanguageService()->sL($label) ?: $value;
+			}
+		}
+
+		return $labels;
+	}
+
+
+	protected function getLanguageService(): LanguageService
+	{
+		return $GLOBALS['LANG'];
 	}
 
 	/**
